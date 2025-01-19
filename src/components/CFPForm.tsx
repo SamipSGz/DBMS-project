@@ -187,7 +187,7 @@ export function CFPForm() {
 
             <div className="col-span-full">
               <label htmlFor="topic" className="block text-sm font-medium leading-6 text-gray-900">
-                Research Topic
+                Category
               </label>
               <div className="mt-2">
                 <input

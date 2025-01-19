@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigation } from './components/Navigation';
 import { Dashboard } from './components/Dashboard';
 import { CFPForm } from './components/CFPForm';
