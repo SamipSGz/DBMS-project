@@ -1,7 +1,9 @@
+import React from 'react';
 import { Navigation } from './components/Navigation';
 import { Dashboard } from './components/Dashboard';
 import { CFPForm } from './components/CFPForm';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Conferences } from './components/Conferences';
+import { BrowserRouter as Router, Routes, Route, useSearchParams } from 'react-router-dom';
 
 function App() {
   return (
@@ -12,6 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/cfp" element={<CFPForm />} />
+            <Route path="/conferences" element={<Conferences />} />
           </Routes>
         </main>
       </div>

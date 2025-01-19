@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Mail, Phone, FileText, Upload, BookOpen } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 export function CFPForm() {
+  const [searchParams] = useSearchParams();
+  const conferenceId = searchParams.get('conference');
+  const cfpId = searchParams.get('cfp');
+
   const [formData, setFormData] = useState({
     title: '',
     email: '',
@@ -14,6 +19,18 @@ export function CFPForm() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Pre-fill form based on selected conference and CFP
+  useEffect(() => {
+    if (conferenceId && cfpId) {
+      // In a real application, fetch the conference and CFP details from an API
+      // For now, we'll just update the title to show it's working
+      setFormData(prev => ({
+        ...prev,
+        title: `Paper for CFP ${cfpId} of Conference ${conferenceId}`,
+      }));
+    }
+  }, [conferenceId, cfpId]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
