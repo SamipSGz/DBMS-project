@@ -94,7 +94,7 @@ export function CFPForm() {
               <label htmlFor="title" className="block text-sm font-medium leading-6 text-gray-900">
                 Paper Title <span className="text-red-500">*</span>
               </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
                 <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
                   <BookOpen className="h-4 w-4" />
                 </span>
@@ -114,7 +114,7 @@ export function CFPForm() {
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email Address <span className="text-red-500">*</span>
               </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
                 <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
                   <Mail className="h-4 w-4" />
                 </span>
@@ -134,7 +134,7 @@ export function CFPForm() {
               <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">
                 Phone Number
               </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
                 <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
                   <Phone className="h-4 w-4" />
                 </span>
@@ -160,7 +160,7 @@ export function CFPForm() {
                   id="affiliation"
                   value={formData.affiliation}
                   onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
                   placeholder="University or Organization"
                 />
               </div>
@@ -170,7 +170,7 @@ export function CFPForm() {
               <label htmlFor="deadline" className="block text-sm font-medium leading-6 text-gray-900">
                 Submission Deadline <span className="text-red-500">*</span>
               </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
                 <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
                   <Calendar className="h-4 w-4" />
                 </span>
@@ -195,7 +195,7 @@ export function CFPForm() {
                   id="topic"
                   value={formData.topic}
                   onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
                   placeholder="e.g., Machine Learning, Blockchain, Cloud Computing"
                 />
               </div>
@@ -211,7 +211,7 @@ export function CFPForm() {
                   rows={4}
                   value={formData.abstract}
                   onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
                   placeholder="Enter your paper abstract"
                 />
               </div>
@@ -228,7 +228,7 @@ export function CFPForm() {
                   <div className="mt-4 flex text-sm leading-6 text-gray-600">
                     <label
                       htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                      className="relative cursor-pointer rounded-md bg-white font-semibold text-emerald-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-600 focus-within:ring-offset-2 hover:text-emerald-500"
                     >
                       <span>Upload a file</span>
                       <input
@@ -268,7 +268,7 @@ export function CFPForm() {
           </button>
           <button
             type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
           >
             Submit Paper
           </button>

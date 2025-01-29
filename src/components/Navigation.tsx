@@ -21,7 +21,7 @@ export function Navigation() {
   };
 
   return (
-    <nav className="bg-indigo-600">
+    <nav className="bg-emerald-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -36,8 +36,8 @@ export function Navigation() {
                     to={item.href}
                     className={`${
                       isActive(item.href)
-                        ? 'bg-indigo-700 text-white'
-                        : 'text-white hover:bg-indigo-500'
+                        ? 'bg-emerald-700 text-white'
+                        : 'text-white hover:bg-emerald-500'
                     } px-3 py-2 rounded-md text-sm font-medium`}
                   >
                     {item.name}
@@ -49,7 +49,7 @@ export function Navigation() {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-indigo-500 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-emerald-500 focus:outline-none"
             >
               <Menu className="h-6 w-6" />
             </button>
@@ -66,8 +66,8 @@ export function Navigation() {
                 to={item.href}
                 className={`${
                   isActive(item.href)
-                    ? 'bg-indigo-700 text-white'
-                    : 'text-white hover:bg-indigo-500'
+                    ? 'bg-emerald-700 text-white'
+                    : 'text-white hover:bg-emerald-500'
                 } block px-3 py-2 rounded-md text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >

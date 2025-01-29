@@ -1,9 +1,9 @@
 import React from 'react';
-import { FileText, Users, Calendar, BookOpen, Award, Clock } from 'lucide-react';
+import { FileText, Users, Calendar, BookOpen, Award, Clock, LogOut } from 'lucide-react';
 
-export function Dashboard() {
+export function Dashboard({ onLogout }: { onLogout: () => void }) {
   const stats = [
-    { name: 'Active CFPs', value: '12', icon: FileText, color: 'bg-blue-500' },
+    { name: 'Active CFPs', value: '12', icon: FileText, color: 'bg-emerald-500' },
     { name: 'Total Submissions', value: '48', icon: BookOpen, color: 'bg-green-500' },
     { name: 'Upcoming Conferences', value: '3', icon: Calendar, color: 'bg-purple-500' },
     { name: 'Reviewers', value: '24', icon: Users, color: 'bg-yellow-500' },
@@ -24,11 +24,20 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Overview of your Call for Papers tracking system
-        </p>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Overview of your Call for Papers tracking system
+          </p>
+        </div>
+        <button
+          onClick={onLogout}
+          className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
+        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">

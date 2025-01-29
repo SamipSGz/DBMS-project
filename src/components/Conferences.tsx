@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, BookOpen, ArrowRight, FileText } from 'lucide-react';
 
 interface ConferenceDetails {
@@ -19,6 +20,7 @@ interface ConferenceDetails {
 
 export function Conferences() {
   const [selectedConference, setSelectedConference] = useState<ConferenceDetails | null>(null);
+  const navigate = useNavigate();
 
   // Mock data - replace with actual API calls
   const conferences: ConferenceDetails[] = [
@@ -130,7 +132,7 @@ export function Conferences() {
                   onClick={() => setSelectedConference(
                     selectedConference?.id === conference.id ? null : conference
                   )}
-                  className="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
                   View CFPs
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -162,8 +164,10 @@ export function Conferences() {
                             </div>
                           </div>
                           <button
-                            onClick={() => window.location.href = `/cfp?conference=${conference.id}&cfp=${cfp.id}`}
-                            className="ml-4 inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={() => {
+                              navigate(`/cfp?conference=${conference.id}&cfp=${cfp.id}`);
+                            }}
+                            className="ml-4 inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-emerald-600 bg-emerald-100 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                           >
                             Submit Paper
                           </button>
