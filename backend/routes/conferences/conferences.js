@@ -11,7 +11,7 @@ module.exports = (db) => {
     try {
       const query = `
         SELECT c.Conference_ID, c.Name, c.Theme, c.Location, c.Start_Date, c.End_Date, 
-               f.CFP_ID, f.Title AS CFP_Title, f.Topic
+               f.CFP_ID, f.Title AS CFP_Title, f.Topic, f.Announced_Date
         FROM Conference c
         LEFT JOIN CFP f ON c.Conference_ID = f.Conference_ID
       `;
