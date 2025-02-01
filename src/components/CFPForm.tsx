@@ -86,193 +86,193 @@ export function CFPForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
-        <div className="px-4 py-6 sm:p-8">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-4">
-              <label htmlFor="title" className="block text-sm font-medium leading-6 text-gray-900">
-                Paper Title <span className="text-red-500">*</span>
-              </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
-                <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                  <BookOpen className="h-4 w-4" />
-                </span>
-                <input
-                  type="text"
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="Enter paper title"
-                />
+    <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-gray-100 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-sm">
+        <h2 className="text-2xl font-bold mb-6">Submit Your Paper</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Paper Title <span className="text-red-500">*</span>
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <BookOpen className="h-5 w-5 text-gray-400" />
               </div>
-              {errors.title && <p className="mt-2 text-sm text-red-600">{errors.title}</p>}
+              <input
+                type="text"
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                placeholder="Enter paper title"
+              />
             </div>
+            {errors.title && <p className="mt-2 text-sm text-red-600">{errors.title}</p>}
+          </div>
 
-            <div className="sm:col-span-4">
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                Email Address <span className="text-red-500">*</span>
-              </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
-                <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                  <Mail className="h-4 w-4" />
-                </span>
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="you@example.com"
-                />
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email Address <span className="text-red-500">*</span>
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-gray-400" />
               </div>
-              {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+              <input
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                placeholder="you@example.com"
+              />
             </div>
+            {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+          </div>
 
-            <div className="sm:col-span-4">
-              <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">
-                Phone Number
-              </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
-                <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                  <Phone className="h-4 w-4" />
-                </span>
-                <input
-                  type="tel"
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="+1 (555) 000-0000"
-                />
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              Phone Number
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Phone className="h-5 w-5 text-gray-400" />
               </div>
-              {errors.phone && <p className="mt-2 text-sm text-red-600">{errors.phone}</p>}
+              <input
+                type="tel"
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                placeholder="+1 (555) 000-0000"
+              />
             </div>
+            {errors.phone && <p className="mt-2 text-sm text-red-600">{errors.phone}</p>}
+          </div>
 
-            <div className="sm:col-span-4">
-              <label htmlFor="affiliation" className="block text-sm font-medium leading-6 text-gray-900">
-                Affiliation
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  id="affiliation"
-                  value={formData.affiliation}
-                  onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
-                  placeholder="University or Organization"
-                />
-              </div>
+          <div>
+            <label htmlFor="affiliation" className="block text-sm font-medium text-gray-700">
+              Affiliation
+            </label>
+            <div className="mt-1 rounded-md shadow-sm">
+              <input
+                type="text"
+                id="affiliation"
+                value={formData.affiliation}
+                onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })}
+                className="block w-full pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                placeholder="University or Organization"
+              />
             </div>
+          </div>
 
-            <div className="sm:col-span-4">
-              <label htmlFor="deadline" className="block text-sm font-medium leading-6 text-gray-900">
-                Submission Deadline <span className="text-red-500">*</span>
-              </label>
-              <div className="mt-2 flex rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-600">
-                <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                  <Calendar className="h-4 w-4" />
-                </span>
-                <input
-                  type="date"
-                  id="deadline"
-                  value={formData.submissionDeadline}
-                  onChange={(e) => setFormData({ ...formData, submissionDeadline: e.target.value })}
-                  className="block flex-1 border-0 bg-transparent py-1.5 pl-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                />
+          <div>
+            <label htmlFor="deadline" className="block text-sm font-medium text-gray-700">
+              Submission Deadline <span className="text-red-500">*</span>
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Calendar className="h-5 w-5 text-gray-400" />
               </div>
-              {errors.submissionDeadline && <p className="mt-2 text-sm text-red-600">{errors.submissionDeadline}</p>}
+              <input
+                type="date"
+                id="deadline"
+                value={formData.submissionDeadline}
+                onChange={(e) => setFormData({ ...formData, submissionDeadline: e.target.value })}
+                className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+              />
             </div>
+            {errors.submissionDeadline && <p className="mt-2 text-sm text-red-600">{errors.submissionDeadline}</p>}
+          </div>
 
-            <div className="col-span-full">
-              <label htmlFor="topic" className="block text-sm font-medium leading-6 text-gray-900">
-                Category
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  id="topic"
-                  value={formData.topic}
-                  onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
-                  placeholder="e.g., Machine Learning, Blockchain, Cloud Computing"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-full">
-              <label htmlFor="abstract" className="block text-sm font-medium leading-6 text-gray-900">
-                Abstract <span className="text-red-500">*</span>
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="abstract"
-                  rows={4}
-                  value={formData.abstract}
-                  onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
-                  placeholder="Enter your paper abstract"
-                />
-              </div>
-              {errors.abstract && <p className="mt-2 text-sm text-red-600">{errors.abstract}</p>}
-            </div>
-
-            <div className="col-span-full">
-              <label htmlFor="file" className="block text-sm font-medium leading-6 text-gray-900">
-                Upload Paper <span className="text-red-500">*</span>
-              </label>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                <div className="text-center">
-                  <FileText className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md bg-white font-semibold text-emerald-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-600 focus-within:ring-offset-2 hover:text-emerald-500"
-                    >
-                      <span>Upload a file</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        className="sr-only"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange}
-                      />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
-                  </div>
-                  <p className="text-xs leading-5 text-gray-600">PDF, DOC, or DOCX up to 10MB</p>
-                </div>
-              </div>
-              {errors.file && <p className="mt-2 text-sm text-red-600">{errors.file}</p>}
+          <div>
+            <label htmlFor="topic" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <div className="mt-1 rounded-md shadow-sm">
+              <input
+                type="text"
+                id="topic"
+                value={formData.topic}
+                onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                className="block w-full pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                placeholder="e.g., Machine Learning, Blockchain, Cloud Computing"
+              />
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
-          <button
-            type="button"
-            className="text-sm font-semibold leading-6 text-gray-900"
-            onClick={() => setFormData({
-              title: '',
-              email: '',
-              phone: '',
-              affiliation: '',
-              submissionDeadline: '',
-              topic: '',
-              abstract: '',
-              file: null,
-            })}
-          >
-            Clear
-          </button>
-          <button
-            type="submit"
-            className="rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-          >
-            Submit Paper
-          </button>
+
+        <div className="mt-6">
+          <label htmlFor="abstract" className="block text-sm font-medium text-gray-700">
+            Abstract <span className="text-red-500">*</span>
+          </label>
+          <div className="mt-1">
+            <textarea
+              id="abstract"
+              rows={4}
+              value={formData.abstract}
+              onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+              placeholder="Enter your paper abstract"
+            />
+          </div>
+          {errors.abstract && <p className="mt-2 text-sm text-red-600">{errors.abstract}</p>}
         </div>
+
+        <div className="mt-6">
+          <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+            Upload Paper <span className="text-red-500">*</span>
+          </label>
+          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+            <div className="space-y-1 text-center">
+              <FileText className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />
+              <div className="flex text-sm text-gray-600">
+                <label
+                  htmlFor="file-upload"
+                  className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500"
+                >
+                  <span>Upload a file</span>
+                  <input
+                    id="file-upload"
+                    name="file-upload"
+                    type="file"
+                    className="sr-only"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                <p className="pl-1">or drag and drop</p>
+              </div>
+              <p className="text-xs text-gray-500">PDF, DOC, or DOCX up to 10MB</p>
+            </div>
+          </div>
+          {errors.file && <p className="mt-2 text-sm text-red-600">{errors.file}</p>}
+        </div>
+      </div>
+
+      <div className="flex justify-end space-x-4">
+        <button
+          type="button"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          onClick={() => setFormData({
+            title: '',
+            email: '',
+            phone: '',
+            affiliation: '',
+            submissionDeadline: '',
+            topic: '',
+            abstract: '',
+            file: null,
+          })}
+        >
+          Clear
+        </button>
+        <button
+          type="submit"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+        >
+          Submit Paper
+        </button>
       </div>
     </form>
   );
