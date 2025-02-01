@@ -79,6 +79,11 @@ export function Conferences() {
     });
   };
 
+  const formatDateForInput = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+
   // Handle form input changes for new conference
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
     setNewConference((prev) => ({
@@ -113,7 +118,7 @@ export function Conferences() {
       return c;
     }));
   };
-  
+
 
   // Add new CFP input field
   const addCFP = () => {
@@ -148,16 +153,27 @@ export function Conferences() {
       console.error('Failed to add conference');
     }
   };
-  
+
   // Handle edit conference
   const handleEditConference = (conference: ConferenceDetails) => {
-    setEditingConference(conference);
+    // Create a copy of the conference with properly formatted dates
+    const formattedConference = {
+      ...conference,
+      Start_Date: formatDateForInput(conference.Start_Date),
+      End_Date: formatDateForInput(conference.End_Date),
+      CFPs: conference.CFPs.map(cfp => ({
+        ...cfp,
+        Announced_Date: cfp.Announced_Date ? formatDateForInput(cfp.Announced_Date) : '',
+        Submission_Deadline: cfp.Submission_Deadline ? formatDateForInput(cfp.Submission_Deadline) : ''
+      }))
+    };
+    setEditingConference(formattedConference);
   };
 
   // Handle updating conference
   const handleUpdateConference = async (e: React.FormEvent, id: number) => {
     e.preventDefault();
-    if (!editingConference) return; 
+    if (!editingConference) return;
 
     try {
       const response = await fetch(`http://localhost:3000/conferences/conferences/${id}`, {
@@ -168,7 +184,7 @@ export function Conferences() {
 
       if (response.ok) {
         // Update the conference in the state
-        setConferences(prevConferences => prevConferences.map(c => 
+        setConferences(prevConferences => prevConferences.map(c =>
           c.Conference_ID === id ? editingConference : c
         ));
         setEditingConference(null);
@@ -188,7 +204,7 @@ export function Conferences() {
       });
 
       if (response.ok) {
-        setConferences(prevConferences => 
+        setConferences(prevConferences =>
           prevConferences.filter(conference => conference.Conference_ID !== id)
         );
       } else {
@@ -272,7 +288,10 @@ export function Conferences() {
                             id="Start_Date"
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                             value={editingConference.Start_Date}
-                            onChange={(e) => setEditingConference({ ...editingConference, Start_Date: e.target.value })}
+                            onChange={(e) => setEditingConference({
+                              ...editingConference,
+                              Start_Date: e.target.value || editingConference.Start_Date
+                            })}
                             required
                           />
                         </div>
@@ -285,12 +304,15 @@ export function Conferences() {
                             id="End_Date"
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                             value={editingConference.End_Date}
-                            onChange={(e) => setEditingConference({ ...editingConference, End_Date: e.target.value })}
+                            onChange={(e) => setEditingConference({
+                              ...editingConference,
+                              End_Date: e.target.value || editingConference.End_Date
+                            })}
                             required
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <h4 className="text-lg font-semibold text-gray-900">CFPs</h4>
                         {editingConference.CFPs.map((cfp, cfpIndex) => (
@@ -300,7 +322,7 @@ export function Conferences() {
                               className="w-full p-2 border border-gray-300 rounded-md"
                               placeholder="CFP Title"
                               value={cfp.CFP_Title}
-                              onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'CFP_Title')} 
+                              onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'CFP_Title')}
                               required
                             />
                             <input
@@ -308,7 +330,7 @@ export function Conferences() {
                               className="w-full p-2 border border-gray-300 rounded-md"
                               placeholder="Topic"
                               value={cfp.Topic}
-                              onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'Topic')} 
+                              onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'Topic')}
                               required
                             />
                           </div>
