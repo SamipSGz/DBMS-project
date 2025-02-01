@@ -7,16 +7,21 @@ module.exports = (db) => {
   });
 
   // Get all conferences
-  router.get("/", (req, res) => {
-    const query = "SELECT * FROM conferences";
-    db.query(query, (err, result) => {
-      if (err) {
-        res.status(500).send("An error occurred while fetching conferences");
-      } else {
-        console.log(result);
-        res.json(result);
-      }
-    });
+  router.get("/conferences", async (req, res) => {
+    try {
+      const query = `
+        SELECT c.Conference_ID, c.Name, c.Theme, c.Location, c.Start_Date, c.End_Date, 
+               f.CFP_ID, f.Title AS CFP_Title, f.Topic
+        FROM Conference c
+        LEFT JOIN CFP f ON c.Conference_ID = f.Conference_ID
+      `;
+      const [result] = await db.query(query); // Use async/await instead of callbacks
+      console.log(result);
+      res.json(result);
+    } catch (err) {
+      console.error("Database query error:", err);
+      res.status(500).json({ message: "An error occurred while fetching conferences" });
+    }
   });
 
   return router;

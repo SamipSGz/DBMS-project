@@ -1,95 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, BookOpen, ArrowRight, FileText } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight } from 'lucide-react';
+
+interface CFPDetails {
+  CFP_ID: number;
+  CFP_Title: string;
+  Topic: string;
+}
 
 interface ConferenceDetails {
-  id: string;
-  name: string;
-  theme: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  cfps: {
-    id: string;
-    title: string;
-    topic: string;
-    submissionDeadline: string;
-    paperCount: number;
-  }[];
+  Conference_ID: number;
+  Name: string;
+  Theme: string;
+  Location: string;
+  Start_Date: string;
+  End_Date: string;
+  CFPs: CFPDetails[];
 }
 
 export function Conferences() {
-  const [selectedConference, setSelectedConference] = useState<ConferenceDetails | null>(null);
+  const [conferences, setConferences] = useState<ConferenceDetails[]>([]);
+  const [selectedConference, setSelectedConference] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  // Mock data - replace with actual API calls
-  const conferences: ConferenceDetails[] = [
-    {
-      id: '1',
-      name: 'International Conference on Artificial Intelligence',
-      theme: 'AI for Sustainable Future',
-      location: 'San Francisco, CA',
-      startDate: '2024-06-15',
-      endDate: '2024-06-18',
-      cfps: [
-        {
-          id: 'cfp1',
-          title: 'AI in Healthcare',
-          topic: 'Machine Learning Applications',
-          submissionDeadline: '2024-04-15',
-          paperCount: 12,
-        },
-        {
-          id: 'cfp2',
-          title: 'Ethical AI Development',
-          topic: 'AI Ethics and Governance',
-          submissionDeadline: '2024-04-20',
-          paperCount: 8,
-        },
-      ],
-    },
-    {
-      id: '2',
-      name: 'Blockchain Technology Summit',
-      theme: 'Decentralized Systems and Applications',
-      location: 'London, UK',
-      startDate: '2024-07-10',
-      endDate: '2024-07-12',
-      cfps: [
-        {
-          id: 'cfp3',
-          title: 'Smart Contract Security',
-          topic: 'Blockchain Security',
-          submissionDeadline: '2024-05-01',
-          paperCount: 15,
-        },
-      ],
-    },
-    {
-      id: '3',
-      name: 'Cloud Computing and DevOps Conference',
-      theme: 'Modern Infrastructure and Practices',
-      location: 'Singapore',
-      startDate: '2024-08-20',
-      endDate: '2024-08-23',
-      cfps: [
-        {
-          id: 'cfp4',
-          title: 'Serverless Architecture',
-          topic: 'Cloud Infrastructure',
-          submissionDeadline: '2024-06-15',
-          paperCount: 10,
-        },
-        {
-          id: 'cfp5',
-          title: 'DevOps Best Practices',
-          topic: 'Development Operations',
-          submissionDeadline: '2024-06-20',
-          paperCount: 7,
-        },
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchConferences = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/conferences/conferences');
+        const data = await response.json();
+
+        const groupedData = data.reduce((acc: Record<number, ConferenceDetails>, item: any) => {
+          if (!acc[item.Conference_ID]) {
+            acc[item.Conference_ID] = {
+              Conference_ID: item.Conference_ID,
+              Name: item.Name,
+              Theme: item.Theme,
+              Location: item.Location,
+              Start_Date: item.Start_Date,
+              End_Date: item.End_Date,
+              CFPs: []
+            };
+          }
+          acc[item.Conference_ID].CFPs.push({
+            CFP_ID: item.CFP_ID,
+            CFP_Title: item.CFP_Title,
+            Topic: item.Topic
+          });
+          return acc;
+        }, {});
+
+        setConferences(Object.values(groupedData));
+      } catch (error) {
+        console.error('Error fetching conferences:', error);
+      }
+    };
+
+    fetchConferences();
+  }, []);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -103,78 +70,61 @@ export function Conferences() {
     <div className="space-y-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Conferences</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Browse upcoming conferences and their call for papers
-        </p>
+        <p className="mt-2 text-sm text-gray-600">Browse upcoming conferences and their call for papers</p>
       </div>
-
       <div className="grid grid-cols-1 gap-6">
         {conferences.map((conference) => (
-          <div key={conference.id} className="bg-white shadow rounded-lg overflow-hidden">
+          <div key={conference.Conference_ID} className="bg-white shadow rounded-lg overflow-hidden">
             <div className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-gray-900">{conference.name}</h2>
-                  <p className="mt-1 text-sm text-gray-500">{conference.theme}</p>
-                  
+                  <h2 className="text-xl font-semibold text-gray-900">{conference.Name}</h2>
+                  <p className="mt-1 text-sm text-gray-500">{conference.Theme}</p>
+
                   <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex items-center text-sm text-gray-500">
                       <Calendar className="h-4 w-4 mr-2" />
-                      {formatDate(conference.startDate)} - {formatDate(conference.endDate)}
+                      {formatDate(conference.Start_Date)} - {formatDate(conference.End_Date)}
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
                       <MapPin className="h-4 w-4 mr-2" />
-                      {conference.location}
+                      {conference.Location}
                     </div>
                   </div>
                 </div>
                 <button
-                  onClick={() => setSelectedConference(
-                    selectedConference?.id === conference.id ? null : conference
-                  )}
+                  onClick={() =>
+                    setSelectedConference(selectedConference === conference.Conference_ID ? null : conference.Conference_ID)
+                  }
                   className="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
-                  View CFPs
+                  {selectedConference === conference.Conference_ID ? "Hide Details" : "View Details"}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </button>
               </div>
 
-              {selectedConference?.id === conference.id && (
+              {selectedConference === conference.Conference_ID && (
                 <div className="mt-6 border-t border-gray-200 pt-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Call for Papers</h3>
-                  <div className="grid grid-cols-1 gap-4">
-                    {conference.cfps.map((cfp) => (
-                      <div
-                        key={cfp.id}
-                        className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-base font-medium text-gray-900">{cfp.title}</h4>
-                            <p className="mt-1 text-sm text-gray-500">{cfp.topic}</p>
-                            <div className="mt-2 flex items-center gap-4">
-                              <div className="flex items-center text-sm text-gray-500">
-                                <Calendar className="h-4 w-4 mr-1" />
-                                Deadline: {formatDate(cfp.submissionDeadline)}
-                              </div>
-                              <div className="flex items-center text-sm text-gray-500">
-                                <FileText className="h-4 w-4 mr-1" />
-                                {cfp.paperCount} papers
-                              </div>
-                            </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Call for Papers (CFP)</h3>
+                  {conference.CFPs.length > 0 ? (
+                    <ul className="space-y-4">
+                      {conference.CFPs.map((cfp, index) => (
+                        <li key={cfp.CFP_ID} className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{index + 1}. {cfp.CFP_Title}</p>
+                            <p className="text-xs text-gray-600">Topic: {cfp.Topic}</p>
                           </div>
                           <button
-                            onClick={() => {
-                              navigate(`/cfp?conference=${conference.id}&cfp=${cfp.id}`);
-                            }}
-                            className="ml-4 inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-emerald-600 bg-emerald-100 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                            className="ml-4 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                           >
                             Submit Paper
                           </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-500">No CFPs available for this conference.</p>
+                  )}
                 </div>
               )}
             </div>
