@@ -11,7 +11,7 @@ module.exports = (db) => {
     try {
       const query = `
         SELECT c.Conference_ID, c.Name, c.Theme, c.Location, c.Start_Date, c.End_Date, 
-               f.CFP_ID, f.Title AS CFP_Title, f.Topic
+               f.CFP_ID, f.Title AS CFP_Title, f.Topic, f.Announced_Date, f.Submission_Deadline
         FROM Conference c
         LEFT JOIN CFP f ON c.Conference_ID = f.Conference_ID
       `;
@@ -40,8 +40,8 @@ module.exports = (db) => {
       
       for (const cfp of CFPs) {
         await connection.query(
-          `INSERT INTO CFP (Conference_ID, Title, Topic) VALUES (?, ?, ?)`,
-          [conferenceID, cfp.CFP_Title, cfp.Topic]
+          `INSERT INTO CFP (Conference_ID, Title, Announced_Date, Submission_Date, Topic) VALUES (?, ?, CURRENT_DATE, ?, ?)`,
+          [conferenceID, cfp.CFP_Title,cfp.Submission_Date, cfp.Topic]
         );
       }
 
@@ -51,6 +51,58 @@ module.exports = (db) => {
       await connection.rollback();
       console.error(err);
       res.status(500).json({ message: "Failed to add conference" });
+    } finally {
+      connection.release();
+    }
+  });
+
+  //update conference and associated CFPs
+  router.put("/conferences/:id", async (req, res) => {
+    const { id } = req.params;
+    const { Name, Theme, Location, Start_Date, End_Date, CFPs } = req.body;
+    const connection = await db.getConnection();
+    
+    try {
+      await connection.beginTransaction();
+      await connection.query(
+        `UPDATE Conference SET Name=?, Theme=?, Location=?, Start_Date=?, End_Date=? WHERE Conference_ID=?`,
+        [Name, Theme, Location, Start_Date, End_Date, id]
+      );
+      
+      await connection.query(`DELETE FROM CFP WHERE Conference_ID=?`, [id]);
+      
+      for (const cfp of CFPs) {
+        await connection.query(
+          `INSERT INTO CFP (Conference_ID, Title, Topic, Announced_Date) VALUES (?, ?, ?, ?)`,
+          [id, cfp.CFP_Title, cfp.Topic, cfp.Announced_Date]
+        );
+      }
+      
+      await connection.commit();
+      res.json({ message: "Conference updated successfully" });
+    } catch (err) {
+      await connection.rollback();
+      console.error(err);
+      res.status(500).json({ message: "Failed to update conference" });
+    } finally {
+      connection.release();
+    }
+  });
+
+  router.delete("/conferences/:id", async (req, res) => {
+    const { id } = req.params;
+    const connection = await db.getConnection();
+    
+    try {
+      await connection.beginTransaction();
+      await connection.query(`DELETE FROM CFP WHERE Conference_ID=?`, [id]);
+      await connection.query(`DELETE FROM Conference WHERE Conference_ID=?`, [id]);
+      await connection.commit();
+      res.json({ message: "Conference deleted successfully" });
+    } catch (err) {
+      await connection.rollback();
+      console.error(err);
+      res.status(500).json({ message: "Failed to delete conference" });
     } finally {
       connection.release();
     }
