@@ -166,7 +166,7 @@ export function CFPForm() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label htmlFor="deadline" className="block text-sm font-medium text-gray-700">
               Submission Deadline <span className="text-red-500">*</span>
             </label>
@@ -183,7 +183,7 @@ export function CFPForm() {
               />
             </div>
             {errors.submissionDeadline && <p className="mt-2 text-sm text-red-600">{errors.submissionDeadline}</p>}
-          </div>
+          </div> */}
 
           <div>
             <label htmlFor="topic" className="block text-sm font-medium text-gray-700">
