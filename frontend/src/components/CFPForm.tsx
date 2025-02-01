@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Mail, Phone, FileText, Upload, BookOpen } from 'lucide-react';
+import { BookOpen, FileText, BookmarkPlus } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+
+interface PaperDetails {
+  Paper_ID: number;
+  Title: string;
+  Topic: string;
+  file: File;
+}
+
+interface FormData {
+  title: string;
+  cfp_id: string;
+  topic: string;
+  file: File | null;
+}
 
 export function CFPForm() {
   const [searchParams] = useSearchParams();
   const conferenceId = searchParams.get('conference');
   const cfpId = searchParams.get('cfp');
 
-  const [formData, setFormData] = useState({
+  const [submissions, setSubmissions] = useState<PaperDetails[]>([]);
+  const [formData, setFormData] = useState<FormData>({
     title: '',
-    email: '',
-    phone: '',
-    affiliation: '',
-    submissionDeadline: '',
+    cfp_id: '',
     topic: '',
-    abstract: '',
-    file: null as File | null,
+    file: null,
   });
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Pre-fill form based on selected conference and CFP
   useEffect(() => {
     if (conferenceId && cfpId) {
-      // In a real application, fetch the conference and CFP details from an API
-      // For now, we'll just update the title to show it's working
       setFormData(prev => ({
         ...prev,
+        cfp_id: cfpId,
         title: `Paper for CFP ${cfpId} of Conference ${conferenceId}`,
       }));
     }
@@ -39,28 +47,8 @@ export function CFPForm() {
       newErrors.title = 'Title is required';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-
-    if (formData.phone && !/^\+?[\d\s-]{10,}$/.test(formData.phone)) {
-      newErrors.phone = 'Invalid phone number format';
-    }
-
-    if (!formData.submissionDeadline) {
-      newErrors.submissionDeadline = 'Submission deadline is required';
-    } else {
-      const deadline = new Date(formData.submissionDeadline);
-      const today = new Date();
-      if (deadline < today) {
-        newErrors.submissionDeadline = 'Deadline must be in the future';
-      }
-    }
-
-    if (!formData.abstract.trim()) {
-      newErrors.abstract = 'Abstract is required';
+    if (!formData.cfp_id.trim()) {
+      newErrors.cfp_id = 'CFP ID is required';
     }
 
     if (!formData.file) {
@@ -71,24 +59,69 @@ export function CFPForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Handle form submission
-      console.log('Form submitted:', formData);
+    if (!validateForm()) return;
+
+    const formPayload = new FormData();
+    formPayload.append('title', formData.title);
+    formPayload.append('cfp_id', formData.cfp_id);
+    formPayload.append('topic', formData.topic);
+    if (formData.file) {
+      formPayload.append('file', formData.file);
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/cfps/submit', {
+        method: 'POST',
+        body: formPayload,
+      });
+
+      if (!response.ok) {
+        throw new Error('Submission failed');
+      }
+
+      const submittedPaper = await response.json();
+      setSubmissions(prev => [...prev, submittedPaper]);
+      
+      // Reset form
+      setFormData({
+        title: '',
+        cfp_id: '',
+        topic: '',
+        file: null,
+      });
+      setErrors({});
+    } catch (error) {
+      console.error('Failed to submit paper:', error);
+      setErrors(prev => ({
+        ...prev,
+        submit: 'Failed to submit paper. Please try again.',
+      }));
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, file: e.target.files[0] });
+      setFormData(prev => ({ ...prev, file: e.target.files![0] }));
     }
+  };
+
+  const handleClear = () => {
+    setFormData({
+      title: '',
+      cfp_id: '',
+      topic: '',
+      file: null,
+    });
+    setErrors({});
   };
 
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-gray-100 rounded-lg shadow-md">
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <h2 className="text-2xl font-bold mb-6">Submit Your Paper</h2>
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
@@ -102,7 +135,7 @@ export function CFPForm() {
                 type="text"
                 id="title"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                 placeholder="Enter paper title"
               />
@@ -111,90 +144,35 @@ export function CFPForm() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email Address <span className="text-red-500">*</span>
+            <label htmlFor="cfp_id" className="block text-sm font-medium text-gray-700">
+              CFP ID <span className="text-red-500">*</span>
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+                <BookmarkPlus className="h-5 w-5 text-gray-400" />
               </div>
               <input
-                type="email"
-                id="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                type="number"
+                id="cfp_id"
+                value={formData.cfp_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, cfp_id: e.target.value }))}
                 className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                placeholder="you@example.com"
+                placeholder="77"
               />
             </div>
-            {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+            {errors.cfp_id && <p className="mt-2 text-sm text-red-600">{errors.cfp_id}</p>}
           </div>
-
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Phone className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="tel"
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                placeholder="+1 (555) 000-0000"
-              />
-            </div>
-            {errors.phone && <p className="mt-2 text-sm text-red-600">{errors.phone}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="affiliation" className="block text-sm font-medium text-gray-700">
-              Affiliation
-            </label>
-            <div className="mt-1 rounded-md shadow-sm">
-              <input
-                type="text"
-                id="affiliation"
-                value={formData.affiliation}
-                onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })}
-                className="block w-full pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                placeholder="University or Organization"
-              />
-            </div>
-          </div>
-
-          {/* <div>
-            <label htmlFor="deadline" className="block text-sm font-medium text-gray-700">
-              Submission Deadline <span className="text-red-500">*</span>
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Calendar className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="date"
-                id="deadline"
-                value={formData.submissionDeadline}
-                onChange={(e) => setFormData({ ...formData, submissionDeadline: e.target.value })}
-                className="block w-full pl-10 pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-              />
-            </div>
-            {errors.submissionDeadline && <p className="mt-2 text-sm text-red-600">{errors.submissionDeadline}</p>}
-          </div> */}
 
           <div>
             <label htmlFor="topic" className="block text-sm font-medium text-gray-700">
-              Category
+              Topic
             </label>
             <div className="mt-1 rounded-md shadow-sm">
               <input
                 type="text"
                 id="topic"
                 value={formData.topic}
-                onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                onChange={(e) => setFormData(prev => ({ ...prev, topic: e.target.value }))}
                 className="block w-full pr-12 py-2 border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                 placeholder="e.g., Machine Learning, Blockchain, Cloud Computing"
               />
@@ -203,24 +181,7 @@ export function CFPForm() {
         </div>
 
         <div className="mt-6">
-          <label htmlFor="abstract" className="block text-sm font-medium text-gray-700">
-            Abstract <span className="text-red-500">*</span>
-          </label>
-          <div className="mt-1">
-            <textarea
-              id="abstract"
-              rows={4}
-              value={formData.abstract}
-              onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-              placeholder="Enter your paper abstract"
-            />
-          </div>
-          {errors.abstract && <p className="mt-2 text-sm text-red-600">{errors.abstract}</p>}
-        </div>
-
-        <div className="mt-6">
-          <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700">
             Upload Paper <span className="text-red-500">*</span>
           </label>
           <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -250,20 +211,15 @@ export function CFPForm() {
         </div>
       </div>
 
+      {errors.submit && (
+        <div className="text-red-600 text-sm">{errors.submit}</div>
+      )}
+
       <div className="flex justify-end space-x-4">
         <button
           type="button"
           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-          onClick={() => setFormData({
-            title: '',
-            email: '',
-            phone: '',
-            affiliation: '',
-            submissionDeadline: '',
-            topic: '',
-            abstract: '',
-            file: null,
-          })}
+          onClick={handleClear}
         >
           Clear
         </button>
