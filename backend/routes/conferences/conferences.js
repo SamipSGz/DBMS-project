@@ -41,7 +41,7 @@ module.exports = (db) => {
       for (const cfp of CFPs) {
         await connection.query(
           `INSERT INTO CFP (Conference_ID, Title, Announced_Date, Submission_Date, Topic) VALUES (?, ?, CURRENT_DATE, ?, ?)`,
-          [conferenceID, cfp.CFP_Title,cfp.Submission_Date, cfp.Topic]
+          [conferenceID, cfp.CFP_Title, cfp.Submission_Date, cfp.Topic]
         );
       }
 

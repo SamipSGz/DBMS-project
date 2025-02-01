@@ -7,7 +7,6 @@ interface CFPDetails {
   CFP_Title: string;
   Topic: string;
   Announced_Date: string;
-  Submission_Deadline: string;
 }
 
 interface ConferenceDetails {
@@ -57,7 +56,6 @@ export function Conferences() {
             CFP_Title: item.CFP_Title,
             Topic: item.Topic,
             Announced_Date: item.Announced_Date,
-            Submission_Deadline: item.Submission_Deadline,
           });
           return acc;
         }, {});
@@ -198,12 +196,9 @@ export function Conferences() {
                             </p>
                             <p className="text-xs text-gray-600">
                               Topic: {cfp.Topic}
+                            </p>
                             <p className="text-xs text-gray-600">
                               Announced Date: {formatDate(cfp.Announced_Date)}
-                            </p>
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              Submission Deadline: {cfp.Submission_Deadline}
                             </p>
                           </div>
                           <button className="ml-4 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
