@@ -78,7 +78,7 @@ module.exports = (db) => {
             // Generate JWT token
             const token = jwt.sign(
                 { userId: user.id, email: user.email, role: user.role },
-                process.env.JWT.SECRET,
+                "secret",
                 { expiresIn: '24h' }
             );
 
