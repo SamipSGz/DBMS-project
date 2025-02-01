@@ -17,13 +17,13 @@ const db = mysql.createPool({
 
 // Import routes
 const userRoutes = require('./routes/users/users')(db);
-// const conferenceRoutes = require('./routes/conferences/conferences');
-// const cfpRoutes = require('./routes/cfps/cfps');
+const conferenceRoutes = require('./routes/conferences/conferences');
+const cfpRoutes = require('./routes/cfps/cfps');
 
 // Use routes
 app.use('/users', userRoutes);
-// app.use('/conferences', conferenceRoutes);
-// app.use('/cfps', cfpRoutes);
+app.use('/conferences', conferenceRoutes);
+app.use('/cfps', cfpRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
