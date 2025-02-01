@@ -80,8 +80,9 @@ export function Conferences() {
   };
 
   const formatDateForInput = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+    // Split the date string and reconstruct it to force local timezone interpretation
+    const [year, month, day] = new Date(dateString).toISOString().split('T')[0].split('-');
+    return `${year}-${month}-${day}`;
   };
 
   // Handle form input changes for new conference
@@ -159,12 +160,14 @@ export function Conferences() {
     // Create a copy of the conference with properly formatted dates
     const formattedConference = {
       ...conference,
-      Start_Date: formatDateForInput(conference.Start_Date),
-      End_Date: formatDateForInput(conference.End_Date),
+      Start_Date: new Date(new Date(conference.Start_Date).getTime() + 86400000).toISOString().split('T')[0],
+      End_Date: new Date(new Date(conference.End_Date).getTime() + 86400000).toISOString().split('T')[0],
       CFPs: conference.CFPs.map(cfp => ({
         ...cfp,
-        Announced_Date: cfp.Announced_Date ? formatDateForInput(cfp.Announced_Date) : '',
-        Submission_Deadline: cfp.Submission_Deadline ? formatDateForInput(cfp.Submission_Deadline) : ''
+        Announced_Date: cfp.Announced_Date ?
+          new Date(new Date(cfp.Announced_Date).getTime() + 86400000).toISOString().split('T')[0] : '',
+        Submission_Deadline: cfp.Submission_Deadline ?
+          new Date(new Date(cfp.Submission_Deadline).getTime() + 86400000).toISOString().split('T')[0] : ''
       }))
     };
     setEditingConference(formattedConference);
@@ -235,122 +238,153 @@ export function Conferences() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   {editingConference && editingConference.Conference_ID === conference.Conference_ID ? (
-                    <form onSubmit={(e) => handleUpdateConference(e, conference.Conference_ID)}>
-                      <div>
-                        <label htmlFor="Name" className="block text-sm font-medium text-gray-700">
-                          Conference Name
-                        </label>
-                        <input
-                          type="text"
-                          id="Name"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
-                          placeholder="Conference Name"
-                          value={editingConference.Name}
-                          onChange={(e) => setEditingConference({ ...editingConference, Name: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="Theme" className="block text-sm font-medium text-gray-700">
-                          Theme
-                        </label>
-                        <input
-                          type="text"
-                          id="Theme"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
-                          placeholder="Theme"
-                          value={editingConference.Theme}
-                          onChange={(e) => setEditingConference({ ...editingConference, Theme: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="Location" className="block text-sm font-medium text-gray-700">
-                          Location
-                        </label>
-                        <input
-                          type="text"
-                          id="Location"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
-                          placeholder="Location"
-                          value={editingConference.Location}
-                          onChange={(e) => setEditingConference({ ...editingConference, Location: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="flex space-x-4">
-                        <div>
-                          <label htmlFor="Start_Date" className="block text-sm font-medium text-gray-700">
-                            Start Date
-                          </label>
-                          <input
-                            type="date"
-                            id="Start_Date"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
-                            value={editingConference.Start_Date}
-                            onChange={(e) => setEditingConference({
-                              ...editingConference,
-                              Start_Date: e.target.value || editingConference.Start_Date
-                            })}
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="End_Date" className="block text-sm font-medium text-gray-700">
-                            End Date
-                          </label>
-                          <input
-                            type="date"
-                            id="End_Date"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
-                            value={editingConference.End_Date}
-                            onChange={(e) => setEditingConference({
-                              ...editingConference,
-                              End_Date: e.target.value || editingConference.End_Date
-                            })}
-                            required
-                          />
-                        </div>
-                      </div>
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                      <form onSubmit={(e) => handleUpdateConference(e, conference.Conference_ID)} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Left column */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Conference Details</h3>
 
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900">CFPs</h4>
-                        {editingConference.CFPs.map((cfp, cfpIndex) => (
-                          <div key={cfpIndex} className="space-y-2">
-                            <input
-                              type="text"
-                              className="w-full p-2 border border-gray-300 rounded-md"
-                              placeholder="CFP Title"
-                              value={cfp.CFP_Title}
-                              onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'CFP_Title')}
-                              required
-                            />
-                            <input
-                              type="text"
-                              className="w-full p-2 border border-gray-300 rounded-md"
-                              placeholder="Topic"
-                              value={cfp.Topic}
-                              onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'Topic')}
-                              required
-                            />
+                            <div>
+                              <label htmlFor="Name" className="block text-sm font-medium text-gray-700">
+                                Conference Name
+                              </label>
+                              <input
+                                type="text"
+                                id="Name"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                placeholder="Conference Name"
+                                value={editingConference.Name}
+                                onChange={(e) => setEditingConference({ ...editingConference, Name: e.target.value })}
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <label htmlFor="Theme" className="block text-sm font-medium text-gray-700">
+                                Theme
+                              </label>
+                              <input
+                                type="text"
+                                id="Theme"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                placeholder="Theme"
+                                value={editingConference.Theme}
+                                onChange={(e) => setEditingConference({ ...editingConference, Theme: e.target.value })}
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <label htmlFor="Location" className="block text-sm font-medium text-gray-700">
+                                Location
+                              </label>
+                              <input
+                                type="text"
+                                id="Location"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                placeholder="Location"
+                                value={editingConference.Location}
+                                onChange={(e) => setEditingConference({ ...editingConference, Location: e.target.value })}
+                                required
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <label htmlFor="Start_Date" className="block text-sm font-medium text-gray-700">
+                                  Start Date
+                                </label>
+                                <input
+                                  type="date"
+                                  id="Start_Date"
+                                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                  value={editingConference.Start_Date}
+                                  onChange={(e) => setEditingConference({
+                                    ...editingConference,
+                                    Start_Date: e.target.value || editingConference.Start_Date
+                                  })}
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label htmlFor="End_Date" className="block text-sm font-medium text-gray-700">
+                                  End Date
+                                </label>
+                                <input
+                                  type="date"
+                                  id="End_Date"
+                                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                  value={editingConference.End_Date}
+                                  onChange={(e) => setEditingConference({
+                                    ...editingConference,
+                                    End_Date: e.target.value || editingConference.End_Date
+                                  })}
+                                  required
+                                />
+                              </div>
+                            </div>
                           </div>
-                        ))}
-                        {/* You can add more input fields for other CFP details */}
-                      </div>
-                      <button
-                        type="submit"
-                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mr-2"
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditingConference(null)}
-                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      >
-                        Cancel
-                      </button>
-                    </form>
+
+                          {/* Right column */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Call for Papers (CFPs)</h3>
+
+                            <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                              {editingConference.CFPs.map((cfp, cfpIndex) => (
+                                <div
+                                  key={cfpIndex}
+                                  className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3"
+                                >
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                      CFP Title
+                                    </label>
+                                    <input
+                                      type="text"
+                                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                      placeholder="CFP Title"
+                                      value={cfp.CFP_Title}
+                                      onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'CFP_Title')}
+                                      required
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                      Topic
+                                    </label>
+                                    <input
+                                      type="text"
+                                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                      placeholder="Topic"
+                                      value={cfp.Topic}
+                                      onChange={(e) => handleEditCFPChange(e, conference.Conference_ID, cfpIndex, 'Topic')}
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end space-x-3 pt-4 border-t">
+                          <button
+                            type="button"
+                            onClick={() => setEditingConference(null)}
+                            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   ) : (
                     <>
                       <h2 className="text-xl font-semibold text-gray-900">
