@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState } from 'react';
 import Login from './components/Login';
 import Signup from './components/Signup'; 
+import { Submissions } from './components/Submissions';
+import { Reviews } from './components/Reviews';
 
 
 function App() {
@@ -30,6 +32,14 @@ function App() {
             <Route 
               path="/conferences" 
               element={isAuthenticated ? <Conferences /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/submissions" 
+              element={isAuthenticated ? <Submissions /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/reviews" 
+              element={isAuthenticated ? <Reviews /> : <Navigate to="/login" />} 
             />
           </Routes>
         </main>
