@@ -18,7 +18,7 @@ const db = mysql.createPool({
 // Import routes
 const userRoutes = require('./routes/users/users')(db);
 const conferenceRoutes = require('./routes/conferences/conferences')(db);
-const cfpRoutes = require('./routes/cfps/cfps');
+const cfpRoutes = require('./routes/cfps/cfps')(db);
 
 // Use routes
 app.use('/users', userRoutes);

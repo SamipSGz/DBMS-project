@@ -5,7 +5,7 @@ const router = express.Router();
 
 module.exports = (db) => {
     router.get('/test', (req, res) => {
-        res.json({ message: 'API is working!' });
+        res.json({ message: 'Users API is working!' });
     });
 
     // User signup route
@@ -82,7 +82,10 @@ module.exports = (db) => {
                 { expiresIn: '24h' }
             );
 
+            // Send token to the frontend for them to store
             res.json({ message: 'Login successful', token, role: user.role });
+
+            // res.json({ message: 'Login successful', token, role: user.role });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal Server Error' });
