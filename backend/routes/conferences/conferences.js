@@ -11,7 +11,7 @@ module.exports = (db) => {
     try {
       const query = `
         SELECT c.Conference_ID, c.Name, c.Theme, c.Location, c.Start_Date, c.End_Date, 
-               f.CFP_ID, f.Title AS CFP_Title, f.Topic, f.Announced_Date
+               f.CFP_ID, f.Title AS CFP_Title, f.Topic
         FROM Conference c
         LEFT JOIN CFP f ON c.Conference_ID = f.Conference_ID
       `;
@@ -40,8 +40,8 @@ module.exports = (db) => {
       
       for (const cfp of CFPs) {
         await connection.query(
-          `INSERT INTO CFP (Conference_ID, Title, Announced_Date, Submission_Date, Topic) VALUES (?, ?, CURRENT_DATE, ?, ?)`,
-          [conferenceID, cfp.CFP_Title, cfp.Submission_Date, cfp.Topic]
+          `INSERT INTO CFP (Conference_ID, Title, Topic) VALUES (?, ?, ?)`,
+          [conferenceID, cfp.CFP_Title, cfp.Topic]
         );
       }
 
