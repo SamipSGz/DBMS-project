@@ -1,14 +1,11 @@
 const express = require('express');
-const bodyParser = require('body-parser'); // Add this line to require body-parser
-const mysql = require('mysql');
 const cors = require('cors');
-
-
+const mysql = require('mysql');
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
 app.use(cors());
+app.use(express.json());
 
 const db = mysql.createPool({
   connectionLimit: 10,
@@ -18,30 +15,18 @@ const db = mysql.createPool({
   database: "sql12760610",
 });
 
+// Import routes
+const userRoutes = require('./routes/users/users')(db);
+// const conferenceRoutes = require('./routes/conferences/conferences');
+// const cfpRoutes = require('./routes/cfps/cfps');
+
+// Use routes
+app.use('/users', userRoutes);
+// app.use('/conferences', conferenceRoutes);
+// app.use('/cfps', cfpRoutes);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
-});
-
-app.get("/test", (req, res) => {
-  //   res.send("Hello World!");
-  db.query("INSERT INTO Conference (Name, Theme, Location, Start_Date, End_Date) VALUES ('Tech Innovators Summit', 'Future of AI', 'San Francisco, CA', '2025-04-15', '2025-04-17');", (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      res.send(result);
-    }
-  });
-});
-app.get("/selectConference", (req, res) => {
-  db.query("SELECT * FROM Conference", (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-      res.send(result);
-    }
-  });
 });
 
 app.listen(port, () => {
