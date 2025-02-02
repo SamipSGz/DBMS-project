@@ -51,9 +51,9 @@ export function CFPForm() {
       newErrors.cfp_id = 'CFP ID is required';
     }
 
-    if (!formData.file) {
-      newErrors.file = 'Paper file is required';
-    }
+    // if (!formData.file) {
+    //   newErrors.file = 'Paper file is required';
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -74,6 +74,9 @@ export function CFPForm() {
     try {
       const response = await fetch('http://localhost:3000/cfps/submit', {
         method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        },
         body: formPayload,
       });
 
