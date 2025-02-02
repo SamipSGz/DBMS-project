@@ -48,11 +48,19 @@ export interface Person {
   }
   
   
-  export interface Review {
-    id?: string;
-    score: number;
-    personId: string;
-    submissionId: string;
+  // export interface Review {
+  //   id?: string;
+  //   score: number;
+  //   personId: string;
+  //   submissionId: string;
+  // }
+
+
+  export interface Review {  // Define an interface for type safety
+    Submission_ID: number;
+    Paper_Title?: string; // Make Paper_Title optional
+    CFP_Title?: string;  // Make CFP_Title optional
+    Average_Rating?: number; // Make Average_Rating optional
   }
   
   export interface Category {
