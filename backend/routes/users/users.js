@@ -10,17 +10,17 @@ module.exports = (db) => {
 
     // User signup route
     router.post('/register', async (req, res) => {
-        const { email, password, role } = req.body;
+        const { name, email, affiliation, phone_num, password, role } = req.body;
         console.log(email);
 
-        if (!email || !password || !role) {
+        if (!email || !password || !role || !name || !affiliation || !phone_num) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
         try {
             // Check if user already exists
             const [existingUsers] = await db.query(
-                'SELECT * FROM users WHERE email = ?',
+                'SELECT * FROM Person WHERE Email = ?',
                 [email]
             );
 
@@ -33,8 +33,8 @@ module.exports = (db) => {
 
             // Insert new user
             await db.query(
-                'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
-                [email, hashedPassword, role]
+                'INSERT INTO Person (Name, Email, Role, Affiliation, Phone_Number, Hashed_Password) VALUES (?, ?, ?, ?, ?, ?)',
+                [name, email, role, affiliation, phone_num, hashedPassword]
             );
 
             res.status(201).json({ message: 'User registered successfully' });
@@ -49,6 +49,7 @@ module.exports = (db) => {
         console.log("Logging in");
         const { email, password } = req.body;
         console.log(email);
+        // console.log(password);
 
         if (!email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
@@ -59,18 +60,24 @@ module.exports = (db) => {
 
             // Get user from database
             const [rows] = await db.query(
-                'SELECT * FROM users WHERE email = ?',
+                'SELECT * FROM Person WHERE Email = ?',
                 [email]
             );
-
+            
+            // console.log("meowwwww");
+            // console.log(rows);
+            
             if (!rows || rows.length === 0) {
                 return res.status(401).json({ message: 'Invalid credentials' });
             }
-
+            
             const user = rows[0];
+            
+            // console.log("MEOWWWW");
+            // console.log(user);
 
             // Compare passwords
-            const isMatch = await bcrypt.compare(password, user.password);
+            const isMatch = await bcrypt.compare(password, user.Hashed_Password);
             if (!isMatch) {
                 return res.status(401).json({ message: 'Invalid credentials' });
             }
