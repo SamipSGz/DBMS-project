@@ -1,19 +1,21 @@
 // authMiddleware.js
 const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT and extract user data
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extract token from the Authorization header
+const authenticationToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.status(401).json({ message: 'Access Denied: No Token Provided' });  // No token provided, return 401 (Unauthorized)
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
-    // Verify token with the secret key
-    jwt.verify(token, "secret", (err, user) => {
-        if (err) return res.status(403).json({ message: 'Invalid Token' });  // Token is invalid or expired, return 403 (Forbidden)
-        req.user = user;  // Attach the decoded user data to the request object
-        next();  // Call the next middleware or route handler
-    });
+  try {
+    const decoded = jwt.verify(token, "secret");
+    req.user = decoded; // This should include the email from the token payload
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: 'Invalid token' });
+  }
 };
 
-module.exports = authenticateToken;
+module.exports = authenticationToken;

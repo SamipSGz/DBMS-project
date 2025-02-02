@@ -34,57 +34,54 @@ module.exports = (db) => {
     upload.single('file'), // Handle the file upload
     async (req, res) => {
       console.log("POST /submit called");
-
+      // console.log(req);
       const connection = await db.getConnection();
       try {
         console.log("Authentication passed:", req.user);
-        const submitted_By = req.user.email;
         const { title, cfp_id, topic, file } = req.body;
-
+        
         console.log("Received data:", { title, cfp_id, topic, file });
-
+        
         // Input validation
         if (!title || !cfp_id || !topic) {
           console.warn("Missing required fields:", { title, cfp_id, topic });
           return res.status(400).json({ message: "Missing required fields" });
         }
-
+        
         // Verify topic exists
         const [topicExists] = await connection.query(
           'SELECT 1 FROM Category WHERE Topic = ?',
           [topic]
         );
-
+        
         console.log("Topic exists check:", topicExists);
-
+        
         if (!topicExists.length) {
           console.warn("Invalid topic category:", topic);
           return res.status(400).json({ message: "Invalid topic category" });
         }
-
+        
         // Verify cfp_id exists
         const [cfpId] = await connection.query(
           'SELECT 1 FROM CFP WHERE CFP_ID = ?',
           [cfp_id]
         );
-
+        
         console.log("CFP_ID exists check:", cfpId);
-
+        
         if (!cfpId.length) {
           console.warn("Invalid CFP_Id :", cfp_id);
           return res.status(400).json({ message: "Invalid CFP_ID" });
         }
-
+        
         // Verify person exists
-        const [person_id] = await connection.query(
-          'SELECT PersonID FROM Person WHERE Email = ?',
-          [submitted_By]
-        );
-
-        console.log("PersonID exists check:", person_id);
-
-        if (!person_id.length) {
-          console.warn("Invalid Person with PersonID :", person_id);
+        const submitted_By = req.user.userId;
+        console.log("userId:", submitted_By);
+        
+        console.log("PersonID exists check:", submitted_By);
+        
+        if (!submitted_By) {
+          console.warn("Invalid Person with PersonID :", submitted_By);
           return res.status(400).json({ message: "Invalid PersonID" });
         }
 
@@ -103,11 +100,11 @@ module.exports = (db) => {
 
         // Insert into Submission table
         await connection.query(
-          // For Testing since we need to use the Person Table for login and not the user. Ani retrieve personID when inserting.
-          'INSERT INTO Submission (Submission_Date, Status, Paper_ID, CFP_ID, Submitted_By) VALUES (CURRENT_DATE, ?, 1, 9, 1)',
-          ['Waiting']
-          // 'INSERT INTO Submission (Submission_Date, Status, Paper_ID, CFP_ID, Submitted_By) VALUES (CURRENT_DATE, ?, ?, ?, ?)',
-          // ['Waiting', paper_ID, cfp_id, person_id]
+          // // For Testing since we need to use the Person Table for login and not the user. Ani retrieve personID when inserting.
+          // 'INSERT INTO Submission (Submission_Date, Status, Paper_ID, CFP_ID, Submitted_By) VALUES (CURRENT_DATE, ?, 1, 9, 1)',
+          // ['Waiting']
+          'INSERT INTO Submission (Submission_Date, Status, Paper_ID, CFP_ID, Submitted_By) VALUES (CURRENT_DATE, ?, ?, ?, ?)',
+          ['Waiting', paper_ID, cfp_id, req.user.userId]
         );
 
         console.log("Inserted Submission");
