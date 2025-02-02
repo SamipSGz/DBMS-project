@@ -19,11 +19,13 @@ const db = mysql.createPool({
 const userRoutes = require('./routes/users/users')(db);
 const conferenceRoutes = require('./routes/conferences/conferences')(db);
 const cfpRoutes = require('./routes/cfps/cfps')(db);
+const submissionsRoutes = require('./routes/submissions/submissions')(db);
 
 // Use routes
 app.use('/users', userRoutes);
 app.use('/conferences', conferenceRoutes);
 app.use('/cfps', cfpRoutes);
+app.use('/submissions', submissionsRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

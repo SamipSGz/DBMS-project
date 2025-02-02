@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User, FileText } from 'lucide-react';
+import { Mail, Lock, User, FileText, Building, MonitorSmartphone} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Signup() {
+  const [name, setName] = useState("");
+  const [affiliation, setAffiliation] = useState("");
+  const [phone_num, setPhoneNum] = useState("");
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,9 +30,10 @@ export default function Signup() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify({ name, email, role, affiliation, phone_num, password }),
       });
 
+      console.log("The sending body : ",JSON.stringify({ name, email, role, affiliation, phone_num, password }));
       const data = await response.json();
 
       if (!response.ok) {
@@ -60,6 +64,14 @@ export default function Signup() {
           {success && <p className="text-green-500 text-center">{success}</p>}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
+              <label className="block text-gray-600 text-sm mb-2">Name</label>
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input type="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-emerald-500" placeholder="Albert Einstein" required />
+              </div>
+            </div>
+
+            <div>
               <label className="block text-gray-600 text-sm mb-2">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -67,6 +79,22 @@ export default function Signup() {
               </div>
             </div>
 
+            <div>
+              <label className="block text-gray-600 text-sm mb-2">Affiliation</label>
+              <div className="relative">
+                <Building className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input type="affiliation" value={affiliation} onChange={(e) => setAffiliation(e.target.value)} className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-emerald-500" placeholder="Pulchowk Campus" required />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-gray-600 text-sm mb-2">Phone Number</label>
+              <div className="relative">
+                <MonitorSmartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input type="phone_num" value={phone_num} onChange={(e) => setPhoneNum(e.target.value)} className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-emerald-500" placeholder="9810203040" required />
+              </div>
+            </div>
+            
             <div>
               <label className="block text-gray-600 text-sm mb-2">Password</label>
               <div className="relative">

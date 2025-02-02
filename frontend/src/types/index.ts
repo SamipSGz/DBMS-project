@@ -39,6 +39,14 @@ export interface Person {
     cfpId: string;
     submittedById: string;
   }
+  export interface SubmissionRetrive {
+    Submission_ID: number;
+    Paper_Title: string;
+    CFP_Title: string;
+    Status: string;
+    Submission_Date: string;
+  }
+  
   
   export interface Review {
     id?: string;

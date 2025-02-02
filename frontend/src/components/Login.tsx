@@ -4,8 +4,8 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 
 export default function Login({ onLogin }: { onLogin: (token: string) => void }) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [role, setRole] = useState("Author");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // For displaying errors
   const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function Login({ onLogin }: { onLogin: (token: string) => void })
         throw new Error(data.message || "Login failed");
       }
 
-      localStorage.setItem("token", data.token); // Store token
+      localStorage.setItem("authToken", data.token); // Store token
       onLogin(data.token); // Pass token to parent component
 
       // Redirect after login
