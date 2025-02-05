@@ -11,7 +11,8 @@ module.exports = (db) => {
   router.get("/submissions", authenticationToken, async (req, res) => {
     try {
       const submitted_By = req.user.userId;
-
+      
+      
       const query = `
         SELECT s.Submission_ID, p.Title AS Paper_Title, c.Title AS CFP_Title, s.Status, s.Submission_Date
         FROM Submission s
@@ -21,7 +22,7 @@ module.exports = (db) => {
       `;
 
       const [result] = await db.query(query, [submitted_By]); // Corrected query parameter placement
-      console.log(result);
+      //console.log(result);
       res.json(result);
     } catch (err) {
       console.error("Database query error:", err);

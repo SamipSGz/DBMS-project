@@ -13,15 +13,15 @@ const upload = multer({
 
 module.exports = (db) => {
   router.get("/test", (req, res) => {
-    console.log("GET /test called");
+    //console.log("GET /test called");
     res.json({ message: "CFPS API is working!" });
   });
 
   router.get("/cfps", async (req, res) => {
-    console.log("GET /cfps called");
+    //console.log("GET /cfps called");
     try {
       const [result] = await db.query("SELECT * FROM CFP");
-      console.log("CFPs fetched successfully");
+      //console.log("CFPs fetched successfully");
       res.json(result);
     } catch (err) {
       console.error("Database query error:", err);
@@ -33,14 +33,42 @@ module.exports = (db) => {
     authenticationToken, 
     upload.single('file'), // Handle the file upload
     async (req, res) => {
-      console.log("POST /submit called");
-      // console.log(req);
+
+      const userRole = req.user.role;
+      const submitted_By = req.user.userId;
+
+      //console.log("About to Check if the submitter is now allowed to be a Reviewer.");
+      if(userRole == 'Author')
+      {//console.log("Checking if the submitter is now allowed to be a Reviewer.");
+      const query2 = `
+        SELECT COUNT(*)
+        FROM Submission s
+        WHERE s.Submitted_By = ?
+      `;
+      const [result2] = await db.query(query2, [submitted_By]); // Corrected query parameter placement
+      //console.log("Number of Submissions:", result2);
+      const totalSubmissions = result2[0]['COUNT(*)'];
+      //console.log("Number of Submissions:", totalSubmissions);
+
+      if(totalSubmissions > 2){
+        //console.log("Changing to Reviewer.");
+        const query3 = `
+          UPDATE Person
+          SET Role = 'Reviewer'
+          WHERE PersonID = ?
+        `;
+        const [result3] = await db.query(query3,[submitted_By]);
+        //console.log("Update Successful");
+      }}
+
+      //console.log("POST /submit called");
+      // //console.log(req);
       const connection = await db.getConnection();
       try {
-        console.log("Authentication passed:", req.user);
+        //console.log("Authentication passed:", req.user);
         const { title, cfp_id, topic, file } = req.body;
         
-        console.log("Received data:", { title, cfp_id, topic, file });
+        //console.log("Received data:", { title, cfp_id, topic, file });
         
         // Input validation
         if (!title || !cfp_id || !topic) {
@@ -54,7 +82,7 @@ module.exports = (db) => {
           [topic]
         );
         
-        console.log("Topic exists check:", topicExists);
+        //console.log("Topic exists check:", topicExists);
         
         if (!topicExists.length) {
           console.warn("Invalid topic category:", topic);
@@ -67,7 +95,7 @@ module.exports = (db) => {
           [cfp_id]
         );
         
-        console.log("CFP_ID exists check:", cfpId);
+        //console.log("CFP_ID exists check:", cfpId);
         
         if (!cfpId.length) {
           console.warn("Invalid CFP_Id :", cfp_id);
@@ -76,9 +104,9 @@ module.exports = (db) => {
         
         // Verify person exists
         const submitted_By = req.user.userId;
-        console.log("userId:", submitted_By);
+        //console.log("userId:", submitted_By);
         
-        console.log("PersonID exists check:", submitted_By);
+        //console.log("PersonID exists check:", submitted_By);
         
         if (!submitted_By) {
           console.warn("Invalid Person with PersonID :", submitted_By);
@@ -86,7 +114,7 @@ module.exports = (db) => {
         }
 
         await connection.beginTransaction();
-        console.log("Transaction started");
+        //console.log("Transaction started");
 
         // Insert into Paper table
         const [paperResult] = await connection.query(
@@ -94,7 +122,7 @@ module.exports = (db) => {
           [title, topic]
         );
 
-        console.log("Inserted Paper:", paperResult);
+        //console.log("Inserted Paper:", paperResult);
 
         const paper_ID = paperResult.insertId;
 
@@ -107,15 +135,15 @@ module.exports = (db) => {
           ['Waiting', paper_ID, cfp_id, req.user.userId]
         );
 
-        console.log("Inserted Submission");
+        //console.log("Inserted Submission");
 
         await connection.commit();
-        console.log("Transaction committed");
+        //console.log("Transaction committed");
 
-        res.status(201).json({
-          message: "Paper submission successful",
-          paper_id: paper_ID
-        });
+          res.status(201).json({
+            message: "Paper submission successful",
+            paper_id: paper_ID
+          });
 
       } catch (error) {
         await connection.rollback();
@@ -126,7 +154,7 @@ module.exports = (db) => {
         });
       } finally {
         connection.release();
-        console.log("Database connection released");
+        //console.log("Database connection released");
       }
     }
   );
