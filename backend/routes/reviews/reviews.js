@@ -21,6 +21,10 @@ module.exports = (db) => {
         WHERE s.Status = 'Approved'
         GROUP BY s.Submission_ID, p.Title, c.Title, r.Paper_ID
       `;
+      // const query = `
+      //   SELECT *
+      //   FROM Submission s
+      // `;
 
       const [result] = await db.query(query); // Corrected query parameter placement
       console.log(result);
