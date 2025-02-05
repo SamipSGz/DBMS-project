@@ -11,11 +11,12 @@ module.exports = (db) => {
   router.get("/reviews", authenticationToken, async (req, res) => {
     try {
       // console.log("HERE", req.body);
-      // //console.log("HERE", req.user);
+      // console.log("HERE", req.user);
       const role = req.user.role;
-      const submissionID = req.body['submissionId'];
+      const submissionID = req.user.userId;
 
-      // //console.log(role);
+      // console.log("HERE2", role);
+      // console.log("HERE3", submissionID);
       if (role == "Reviewer") {
       const query = `
         SELECT s.Submission_ID, p.Title AS Paper_Title, c.Title AS CFP_Title, AVG(r.Review_Score) AS Average_Rating
@@ -28,7 +29,7 @@ module.exports = (db) => {
       `;
 
       const [result] = await db.query(query,[submissionID]); // Corrected query parameter placement
-      // console.log(result);
+      // //console.log(result);
       res.json(result);
       } else if(role == "Author") {
         res.status(403).json({ message: "You are not authorized review other's papers" });
@@ -42,17 +43,17 @@ module.exports = (db) => {
   router.post("/submit",authenticationToken,async(req,res)=>{
     try{
       temp = req.body;
-      console.log(temp);
+      //console.log(temp);
       
       const submissionID = req.body['submissionId'];
-      console.log(submissionID);
+      //console.log(submissionID);
       
       const [papers] = await db.query(`
         SELECT Paper_ID FROM Submission WHERE Submission_ID = ?
         `,[submissionID]);
-      console.log(papers);
+      //console.log(papers);
       paperID = papers[0]['Paper_ID'];
-      console.log("PAPER ID : ",paperID);
+      //console.log("PAPER ID : ",paperID);
       // res.json({message:"Review submitted successfully"});
       // const ratings = req.body.ratings;
       const average = parseInt(Object.values(req.body.ratings).reduce((a,b)=>a+b,0)/Object.keys(req.body.ratings).length);
@@ -60,7 +61,7 @@ module.exports = (db) => {
 
       const connection = await db.getConnection();
       await connection.beginTransaction();
-      console.log("Connection Successful.");
+      //console.log("Connection Successful.");
       const query = `
         INSERT INTO Reviews (Review_Score,Paper_ID,Submission_ID) VALUES
         (?,?,?)`
