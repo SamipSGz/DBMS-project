@@ -20,6 +20,7 @@ export function CFPForm() {
   const [searchParams] = useSearchParams();
   const conferenceId = searchParams.get('conference');
   const cfpId = searchParams.get('cfp');
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const [submissions, setSubmissions] = useState<PaperDetails[]>([]);
   const [formData, setFormData] = useState<FormData>({
@@ -81,9 +82,9 @@ export function CFPForm() {
       });
 
       if (!response.ok) {
+        setSuccessMessage('Failed to submit paper. Please try again.');
         throw new Error('Submission failed');
       }
-
       const submittedPaper = await response.json();
       setSubmissions(prev => [...prev, submittedPaper]);
       
@@ -94,6 +95,7 @@ export function CFPForm() {
         topic: '',
         file: null,
       });
+      setSuccessMessage('Paper submitted successfully');
       setErrors({});
     } catch (error) {
       console.error('Failed to submit paper:', error);
@@ -233,6 +235,11 @@ export function CFPForm() {
           Submit Paper
         </button>
       </div>
-    </form>
+      {successMessage && (
+  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
+    <strong className="font-bold">Success! </strong>
+    <span className="block sm:inline">{successMessage}</span>
+  </div>
+)}    </form>
   );
 }
