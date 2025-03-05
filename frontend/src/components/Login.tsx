@@ -4,7 +4,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 
 export default function Login({ onLogin }: { onLogin: (token: string) => void }) {
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("Author");
+  // const [role, setRole] = useState("Author");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // For displaying errors
   const [loading, setLoading] = useState(false); // Loading state
@@ -20,7 +20,7 @@ export default function Login({ onLogin }: { onLogin: (token: string) => void })
       const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -98,33 +98,6 @@ export default function Login({ onLogin }: { onLogin: (token: string) => void })
                   placeholder="Enter your password"
                   required
                 />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-600 text-sm mb-2">Role</label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 appearance-none"
-                >
-                  <option value="Author">Author</option>
-                  <option value="Reviewer">Reviewer</option>
-                  <option value="Editor">Editor</option>
-                </select>
-                <svg
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
               </div>
             </div>
 

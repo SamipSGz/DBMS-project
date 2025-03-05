@@ -16,7 +16,7 @@ module.exports = (db) => {
         LEFT JOIN CFP f ON c.Conference_ID = f.Conference_ID
       `;
       const [result] = await db.query(query); // Use async/await instead of callbacks
-      console.log(result);
+      ////console.log(result);
       res.json(result);
     } catch (err) {
       console.error("Database query error:", err);

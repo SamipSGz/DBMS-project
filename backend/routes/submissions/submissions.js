@@ -22,7 +22,7 @@ module.exports = (db) => {
       `;
 
       const [result] = await db.query(query, [submitted_By]); // Corrected query parameter placement
-      //console.log(result);
+      ////console.log(result);
       res.json(result);
     } catch (err) {
       console.error("Database query error:", err);

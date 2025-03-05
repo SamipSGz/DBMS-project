@@ -9,7 +9,6 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('Author');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
@@ -30,10 +29,10 @@ export default function Signup() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, role, affiliation, phone_num, password }),
+        body: JSON.stringify({ name, email, affiliation, phone_num, password }),
       });
 
-      console.log("The sending body : ",JSON.stringify({ name, email, role, affiliation, phone_num, password }));
+      ////console.log("The sending body : ",JSON.stringify({ name, email, affiliation, phone_num, password }));
       const data = await response.json();
 
       if (!response.ok) {
@@ -111,18 +110,7 @@ export default function Signup() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-gray-600 text-sm mb-2">Role</label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-emerald-500 appearance-none">
-                  <option value="Author">Author</option>
-                  <option value="Reviewer">Reviewer</option>
-                  <option value="Editor">Editor</option>
-                </select>
-              </div>
-            </div>
-
+            
             <button type="submit" className="w-full bg-emerald-600 text-white font-medium py-3 rounded-lg hover:bg-emerald-700 transition-colors">Sign Up</button>
             <div className="mt-6 text-center">
               <span className="text-gray-600 text-sm">Already have an account? <Link to="/login" className="text-emerald-600 hover:text-emerald-700">Log in</Link></span>

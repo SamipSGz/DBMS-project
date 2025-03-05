@@ -11,8 +11,8 @@ module.exports = (db) => {
         try{
             // const role = req.user.role;
             // const userId = req.user.userId;
-            //console.log("Role:",role);
-            //console.log("User ID:",userId);
+            ////console.log("Role:",role);
+            ////console.log("User ID:",userId);
             // if(role == "Author"){
                 const activeCFPQuery = `
                     SELECT COUNT(cf.CFP_ID)
@@ -56,8 +56,8 @@ module.exports = (db) => {
                 const [noOfReviewersResult] = await db.query(noOfReviewersQuery);   
                 const [recentSubmissionResult] = await db.query(recentSubmissionQuery);
                 const [upcomingDeadlinesResult] = await db.query(upcomingDeadlines);
-                console.log("Dashboard data fetched successfully");
-                //console.log("Submissions fetched successfully");
+                //console.log("Dashboard data fetched successfully");
+                ////console.log("Submissions fetched successfully");
                 res.json({
                     activeCFP:activeCFPResult[0]['COUNT(cf.CFP_ID)'],
                     totalSubmissions:totalSubmissionsResult[0]['COUNT(s.Submission_ID)'],
