@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, ArrowRight, Trash, Edit } from 'lucide-react';
-
+import { Calendar, MapPin, ArrowRight, Trash, Edit, FilterIcon, ArrowUpDown } from 'lucide-react';
 interface CFPDetails {
   CFP_ID: number;
   CFP_Title: string;
@@ -32,6 +31,12 @@ export function Conferences() {
     CFPs: [{ CFP_Title: '', Topic: '' }],
   });
   const [editingConference, setEditingConference] = useState<ConferenceDetails | null>(null);
+  const [dateFilter, setDateFilter] = useState({
+    startDate: '',
+    endDate: ''
+  });
+  const [filteredConferences, setFilteredConferences] = useState<ConferenceDetails[]>([]);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const navigate = useNavigate();
 
@@ -62,14 +67,51 @@ export function Conferences() {
           });
           return acc;
         }, {});
-        setConferences(Object.values(groupedData));
+        
+        const conferencesArray = Object.values(groupedData) as ConferenceDetails[];
+        setConferences(conferencesArray);
+        setFilteredConferences(conferencesArray); // Initialize filtered conferences
+
       } catch (error) {
         console.error('Error fetching conferences:', error);
       }
     };
 
     fetchConferences();
+
+    
+  
   }, []);
+
+  const handleSort = () => {
+    const sorted = [...filteredConferences].sort((a, b) => {
+      const dateA = new Date(a.Start_Date).getTime();
+      const dateB = new Date(b.Start_Date).getTime();
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    setFilteredConferences(sorted);
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
+
+  // Add this function after your existing useEffect
+  const handleDateFilter = () => {
+    if (!dateFilter.startDate && !dateFilter.endDate) {
+      setFilteredConferences(conferences);
+      return;
+    }
+
+    const filtered = conferences.filter(conference => {
+      const conferenceStart = new Date(conference.Start_Date);
+      const conferenceEnd = new Date(conference.End_Date);
+      const filterStart = dateFilter.startDate ? new Date(dateFilter.startDate) : new Date('1900-01-01');
+      const filterEnd = dateFilter.endDate ? new Date(dateFilter.endDate) : new Date('2100-12-31');
+
+      return conferenceStart >= filterStart && conferenceEnd <= filterEnd;
+    });
+
+    setFilteredConferences(filtered);
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -155,6 +197,7 @@ export function Conferences() {
     }
   };
 
+
   // Handle edit conference
   const handleEditConference = (conference: ConferenceDetails) => {
     // Create a copy of the conference with properly formatted dates
@@ -227,8 +270,69 @@ export function Conferences() {
           Browse upcoming conferences and their call for papers
         </p>
       </div>
+
+
+
+      <div className="mb-6 p-4 bg-white rounded-lg shadow">
+        <div className="flex items-center space-x-4">
+        <div className="flex-1">
+      <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+        Start Date
+      </label>
+      <div className="relative mt-1">
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <Calendar className="h-5 w-5 text-gray-400" aria-hidden="true" />
+        </div>
+        <input
+          type="date"
+          id="startDate"
+          className="block w-full pl-16 pr-4 py-2 border-2 border-gray-300 rounded-lg text-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 cursor-pointer h-10"
+          value={dateFilter.startDate}
+          onChange={(e) => setDateFilter(prev => ({ ...prev, startDate: e.target.value }))}
+          style={{ colorScheme: 'light' }}
+        />
+      </div>
+    </div>
+    <div className="flex-1">
+      <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+        End Date
+      </label>
+      <div className="relative mt-1">
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <Calendar className="h-5 w-5 text-gray-400" aria-hidden="true" />
+        </div>
+        <input
+          type="date"
+          id="endDate"
+          className="block w-full pl-16 pr-4 py-2 border-2 border-gray-300 rounded-lg text-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 cursor-pointer h-10"
+          value={dateFilter.endDate}
+          onChange={(e) => setDateFilter(prev => ({ ...prev, endDate: e.target.value }))}
+          style={{ colorScheme: 'light' }}
+        />
+      </div>
+    </div>
+          <div className="flex items-end space-x-2">
+            <button
+              onClick={handleDateFilter}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            >
+              <FilterIcon className="h-4 w-4 mr-2" />
+              Apply Filter
+            </button>
+            <button
+              onClick={handleSort}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <ArrowUpDown className="h-4 w-4 mr-2" />
+              {sortOrder === 'asc' ? 'Sort Ascending' : 'Sort Descending'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+
       <div className="grid grid-cols-1 gap-6">
-        {conferences.map((conference) => (
+        {filteredConferences.map((conference) => (
           <div
             key={conference.Conference_ID}
             className="bg-white shadow rounded-lg overflow-hidden"
