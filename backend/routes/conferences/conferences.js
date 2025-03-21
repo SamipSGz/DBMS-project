@@ -44,10 +44,12 @@ router.post("/add", async (req, res) => {
     
     // Insert CFPs with correct field names
     for (const cfp of CFPs) {
+
       await connection.query(
-        `INSERT INTO CFP (Conference_ID, Title, Topic, Announced_Date, Submission_Deadline) 
-         VALUES (?, ?, ?, CURRENT_DATE, CURRENT_DATE)`,
-        [conferenceID, cfp.CFP_Title, cfp.Topic]
+        // `INSERT INTO CFP (Conference_ID, Title, Topic, Announced_Date, Submission_Deadline) 
+        `INSERT INTO CFP (Title, Announced_Date, Submission_Deadline, Topic, Conference_ID) 
+         VALUES (?, ?, ?, ?, ?)`,
+        [cfp.CFP_Title, Start_Date, End_Date,cfp.Topic, conferenceID]
       );
     }
 
