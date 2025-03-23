@@ -44,6 +44,23 @@ router.post("/add", async (req, res) => {
     
     // Insert CFPs with correct field names
     for (const cfp of CFPs) {
+    // Verify topic exists
+    // console.log("Topic exists check:", cfp.Topic);
+    const [topicExists] = await connection.query(
+      'SELECT 1 FROM Category WHERE Topic = ?',
+      [cfp.Topic]
+    );
+
+    // console.log("Topic exists check:", topicExists);
+
+    if (!topicExists.length) {
+      // console.warn("Invalid topic category:", cfp.Topic);
+      console.log("Adding new topic in the category Table", cfp.Topic);
+      await connection.query(
+        `INSERT INTO Category (Topic) 
+         VALUES (?)`,
+        [cfp.Topic]
+      );}
 
       await connection.query(
         // `INSERT INTO CFP (Conference_ID, Title, Topic, Announced_Date, Submission_Deadline) 
